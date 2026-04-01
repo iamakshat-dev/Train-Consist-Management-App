@@ -1,62 +1,30 @@
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * ================================================================
- * MAIN CLASS - UseCase4TrainConsistMgmt
- * ================================================================
- *
- * Use Case 4: Maintain Ordered Bogie Consist
- *
- * Description:
- * Models real-world train chaining using LinkedList.
- * Supports ordered insertion, positional insertion,
- * and efficient removal from both ends.
- *
- * Concepts:
- * - LinkedList (Doubly Linked List)
- * - add(), add(index, element)
- * - removeFirst(), removeLast()
- * - Order Preservation
- *
- * @author Developer
- * @version 4.0
- */
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
         System.out.println("=======================================");
-        System.out.println("UC4 - Maintain Ordered Bogie Consist");
+        System.out.println("UC6 - Map Bogie to Capacity (HashMap)");
         System.out.println("=======================================\n");
 
-        // Create a LinkedList to represent train consist
-        List<String> trainConsist = new LinkedList<>();
+        // Create HashMap for bogie-capacity mapping
+        Map<String, Integer> bogieCapacity = new HashMap<>();
 
-        // ---------------- INITIAL ADDITION ----------------
-        trainConsist.add("Engine");
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC");
-        trainConsist.add("Cargo");
-        trainConsist.add("Guard");
+        // ---------------- INSERT DATA ----------------
+        bogieCapacity.put("Sleeper", 72);
+        bogieCapacity.put("AC Chair", 56);
+        bogieCapacity.put("First Class", 120);
+        bogieCapacity.put("Cargo", 100); // load capacity example
 
-        System.out.println("Initial Train Consist:");
-        System.out.println(trainConsist);
+        // ---------------- DISPLAY ----------------
+        System.out.println("Bogie Capacity Details:");
 
-        // ---------------- INSERT AT POSITION ----------------
-        // Insert "Pantry Car" at position 2 (index 2)
-        trainConsist.add(2, "Pantry Car");
+        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
 
-        System.out.println("\nAfter Inserting 'Pantry Car' at position 2:");
-        System.out.println(trainConsist);
-
-        // ---------------- REMOVE FIRST & LAST ----------------
-        ((LinkedList<String>) trainConsist).removeFirst();
-        ((LinkedList<String>) trainConsist).removeLast();
-
-        System.out.println("\nAfter Removing First and Last Bogie:");
-        System.out.println(trainConsist);
-
-        System.out.println("\nUC4 ordered consist operations completed...");
+        System.out.println("\nUC6 bogie-capacity mapping completed...");
     }
 }
