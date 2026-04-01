@@ -1,6 +1,6 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,96 +18,65 @@ public class TrainConsistManagementApp {
 
     // ---------------- BOGIE CLASS ----------------
     static class Bogie {
-        String name;
-        int capacity;
+        private String name;
+        private int capacity;
 
-        Bogie(String name, int capacity) {
+        public Bogie(String name, int capacity) {
             this.name = name;
             this.capacity = capacity;
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getCapacity() {
+            return capacity;
+        }
+
+        @Override
+        public String toString() {
+            return name + " -> " + capacity;
+        }
     }
 
+    // ---------------- FILTER METHOD USING STREAM ----------------
+    public static List<Bogie> filterByCapacity(List<Bogie> bogies, int threshold) {
+        return bogies.stream()
+                .filter(b -> b.getCapacity() > threshold) // STRICT >
+                .collect(Collectors.toList());
+    }
+
+    // ---------------- MAIN METHOD ----------------
     public static void main(String[] args) {
 
         System.out.println("=======================================");
-        System.out.println("UC7 - Sort Bogies by Capacity (Comparator)");
+        System.out.println("UC8 - Filter Passenger Bogies (Streams)");
         System.out.println("=======================================\n");
 
-        // Create list of bogies
+        // Create bogie list
         List<Bogie> bogies = new ArrayList<>();
-
-        // Add bogies
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 24));
         bogies.add(new Bogie("General", 90));
 
-        // ---------------- BEFORE SORT ----------------
-        System.out.println("Before Sorting:");
-        for (Bogie b : bogies) {
-            System.out.println(b.name + " -> " + b.capacity);
-        }
+        // Display original list
+        System.out.println("Original Bogies:");
+        bogies.forEach(System.out::println);
 
-        // ---------------- SORT USING COMPARATOR ----------------
-        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+        // Apply filter
+        int threshold = 60;
+        List<Bogie> filtered = filterByCapacity(bogies, threshold);
 
-        // ---------------- AFTER SORT ----------------
-        System.out.println("\nAfter Sorting by Capacity:");
-        for (Bogie b : bogies) {
-            System.out.println(b.name + " -> " + b.capacity);
-        }
+        // Display filtered result
+        System.out.println("\nFiltered Bogies (Capacity > " + threshold + "):");
+        filtered.forEach(System.out::println);
 
-        System.out.println("\nUC7 sorting completed...");
-        System.out.println("\nUC6 bogie-capacity mapping completed...");
-        System.out.println("UC5 - Preserve Insertion Order of Bogies");
-        System.out.println("=======================================\n");
+        // Verify original list unchanged
+        System.out.println("\nOriginal List After Filtering (Unchanged):");
+        bogies.forEach(System.out::println);
 
-        // LinkedHashSet preserves order and ensures uniqueness
-        Set<String> formation = new LinkedHashSet<>();
-
-        // ---------------- ADD BOGIES ----------------
-        formation.add("Engine");
-        formation.add("Sleeper");
-        formation.add("Cargo");
-        formation.add("Guard");
-
-        // Attempt duplicate insertion
-        formation.add("Sleeper"); // ignored
-
-        // ---------------- DISPLAY RESULT ----------------
-        System.out.println("Final Train Formation:");
-        System.out.println(formation);
-
-        // ---------------- NOTE ----------------
-        System.out.println("\nNote:");
-        System.out.println("LinkedHashSet preserves insertion order and removes duplicates automatically.");
-
-        System.out.println("\nUC5 formation setup completed...");
-        System.out.println("\nUC4 ordered consist operations completed...");
-        System.out.println("UC3 - Track Unique Bogie IDs");
-        System.out.println("=======================================\n");
-
-        // Create a Set to store unique bogie IDs
-        Set<String> bogies = new HashSet<>();
-
-        // ---------------- ADD IDs (including duplicates) ----------------
-        bogies.add("BG101");
-        bogies.add("BG102");
-        bogies.add("BG103");
-        bogies.add("BG104");
-
-        // Duplicate entries (will be ignored automatically)
-        bogies.add("BG101");
-        bogies.add("BG102");
-
-        // ---------------- DISPLAY RESULT ----------------
-        System.out.println("Bogie IDs After Insertion:");
-        System.out.println(bogies);
-
-        // ---------------- NOTE ----------------
-        System.out.println("\nNote:");
-        System.out.println("Duplicates are automatically ignored by HashSet.");
-
-        System.out.println("\nUC3 uniqueness validation completed...");
+        System.out.println("\nUC8 filtering completed...");
     }
 }
