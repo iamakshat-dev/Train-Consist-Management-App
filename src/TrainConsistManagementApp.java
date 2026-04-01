@@ -6,27 +6,7 @@ import java.util.Set;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * ================================================================
- * MAIN CLASS - UseCase4TrainConsistMgmt
- * ================================================================
- *
- * Use Case 4: Maintain Ordered Bogie Consist
- *
- * Description:
- * Models real-world train chaining using LinkedList.
- * Supports ordered insertion, positional insertion,
- * and efficient removal from both ends.
- *
- * Concepts:
- * - LinkedList (Doubly Linked List)
- * - add(), add(index, element)
- * - removeFirst(), removeLast()
- * - Order Preservation
- *
- * @author Developer
- * @version 4.0
- */
+
 import java.util.HashSet;
 import java.util.Set;
 
