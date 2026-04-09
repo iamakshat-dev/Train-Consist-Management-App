@@ -1,3 +1,5 @@
+package test;
+
 import main.TrainConsistManagementApp;
 import org.junit.jupiter.api.Test;
 import java.util.*;
