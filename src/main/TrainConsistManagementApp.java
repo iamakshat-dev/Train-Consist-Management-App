@@ -2,6 +2,8 @@ package main;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class TrainConsistManagementApp {
 
@@ -37,10 +39,25 @@ public class TrainConsistManagementApp {
 
     // ✅ UC10: Total Seat Calculation using reduce()
     public static int calculateTotalSeats(List<Bogie> bogies) {
-
         return bogies.stream()
-                .map(Bogie::getCapacity)   // extract capacity
-                .reduce(0, Integer::sum); // aggregate
+                .map(Bogie::getCapacity)
+                .reduce(0, Integer::sum);
+    }
+
+    // ✅ UC11: Validate Train ID
+    public static boolean isValidTrainId(String trainId) {
+        String regex = "TRN-\\d{4}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(trainId);
+        return matcher.matches();
+    }
+
+    // ✅ UC11: Validate Cargo Code
+    public static boolean isValidCargoCode(String cargoCode) {
+        String regex = "PET-[A-Z]{2}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(cargoCode);
+        return matcher.matches();
     }
 
     // Demo main
@@ -68,6 +85,15 @@ public class TrainConsistManagementApp {
 
         System.out.println("\n==============================");
         System.out.println("Total Seating Capacity: " + totalSeats);
+        System.out.println("==============================");
+
+        // 🔹 UC11 Output
+        String trainId = "TRN-1234";
+        String cargoCode = "PET-AB";
+
+        System.out.println("\n==============================");
+        System.out.println("Train ID (" + trainId + ") Valid: " + isValidTrainId(trainId));
+        System.out.println("Cargo Code (" + cargoCode + ") Valid: " + isValidCargoCode(cargoCode));
         System.out.println("==============================");
     }
 }
