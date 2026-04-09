@@ -16,13 +16,8 @@ public class TrainConsistManagementApp {
             this.capacity = capacity;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public int getCapacity() {
-            return capacity;
-        }
+        public String getName() { return name; }
+        public int getCapacity() { return capacity; }
     }
 
     // Goods Bogie (UC12)
@@ -35,13 +30,8 @@ public class TrainConsistManagementApp {
             this.cargo = cargo;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public String getCargo() {
-            return cargo;
-        }
+        public String getType() { return type; }
+        public String getCargo() { return cargo; }
     }
 
     // ================= UC9 =================
@@ -75,6 +65,42 @@ public class TrainConsistManagementApp {
                 );
     }
 
+    // ================= UC13 =================
+
+    // Loop filtering
+    public static List<Bogie> filterBogiesUsingLoop(List<Bogie> bogies) {
+        List<Bogie> result = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.getCapacity() > 60) {
+                result.add(b);
+            }
+        }
+        return result;
+    }
+
+    // Stream filtering
+    public static List<Bogie> filterBogiesUsingStream(List<Bogie> bogies) {
+        return bogies.stream()
+                .filter(b -> b.getCapacity() > 60)
+                .toList();
+    }
+
+    // Loop timing
+    public static long measureLoopExecutionTime(List<Bogie> bogies) {
+        long start = System.nanoTime();
+        filterBogiesUsingLoop(bogies);
+        long end = System.nanoTime();
+        return end - start;
+    }
+
+    // Stream timing
+    public static long measureStreamExecutionTime(List<Bogie> bogies) {
+        long start = System.nanoTime();
+        filterBogiesUsingStream(bogies);
+        long end = System.nanoTime();
+        return end - start;
+    }
+
     // ================= MAIN =================
     public static void main(String[] args) {
 
@@ -98,5 +124,12 @@ public class TrainConsistManagementApp {
         );
 
         System.out.println("Safety Compliant: " + isSafetyCompliant(goods));
+
+        long loopTime = measureLoopExecutionTime(bogies);
+        long streamTime = measureStreamExecutionTime(bogies);
+
+        System.out.println("\n=== UC13 Performance ===");
+        System.out.println("Loop Time (ns): " + loopTime);
+        System.out.println("Stream Time (ns): " + streamTime);
     }
 }
