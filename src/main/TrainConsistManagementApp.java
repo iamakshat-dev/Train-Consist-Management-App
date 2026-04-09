@@ -3,11 +3,10 @@ package main;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 public class TrainConsistManagementApp {
 
-    // Bogie Model
+    // Passenger Bogie
     public static class Bogie {
         private String name;
         private int capacity;
@@ -24,76 +23,80 @@ public class TrainConsistManagementApp {
         public int getCapacity() {
             return capacity;
         }
+    }
 
-        @Override
-        public String toString() {
-            return name + " -> " + capacity;
+    // Goods Bogie (UC12)
+    public static class GoodsBogie {
+        private String type;
+        private String cargo;
+
+        public GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.cargo = cargo;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getCargo() {
+            return cargo;
         }
     }
 
-    // ✅ UC9: Grouping
+    // ================= UC9 =================
     public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> bogies) {
         return bogies.stream()
                 .collect(Collectors.groupingBy(Bogie::getName));
     }
 
-    // ✅ UC10: Total Seat Calculation using reduce()
+    // ================= UC10 =================
     public static int calculateTotalSeats(List<Bogie> bogies) {
         return bogies.stream()
                 .map(Bogie::getCapacity)
                 .reduce(0, Integer::sum);
     }
 
-    // ✅ UC11: Validate Train ID
+    // ================= UC11 =================
     public static boolean isValidTrainId(String trainId) {
-        String regex = "TRN-\\d{4}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(trainId);
-        return matcher.matches();
+        return Pattern.matches("TRN-\\d{4}", trainId);
     }
 
-    // ✅ UC11: Validate Cargo Code
     public static boolean isValidCargoCode(String cargoCode) {
-        String regex = "PET-[A-Z]{2}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(cargoCode);
-        return matcher.matches();
+        return Pattern.matches("PET-[A-Z]{2}", cargoCode);
     }
 
-    // Demo main
+    // ================= UC12 =================
+    public static boolean isSafetyCompliant(List<GoodsBogie> bogies) {
+        return bogies.stream()
+                .allMatch(b ->
+                        !b.getType().equalsIgnoreCase("Cylindrical")
+                                || b.getCargo().equalsIgnoreCase("Petroleum")
+                );
+    }
+
+    // ================= MAIN =================
     public static void main(String[] args) {
 
-        List<Bogie> bogies = new ArrayList<>();
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("AC Chair", 56),
+                new Bogie("First Class", 24),
+                new Bogie("Sleeper", 70),
+                new Bogie("AC Chair", 60)
+        );
 
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("Sleeper", 70));
-        bogies.add(new Bogie("AC Chair", 60));
+        System.out.println("Grouped: " + groupBogiesByType(bogies));
+        System.out.println("Total Seats: " + calculateTotalSeats(bogies));
 
-        // 🔹 UC9 Output
-        Map<String, List<Bogie>> grouped = groupBogiesByType(bogies);
+        System.out.println("Train ID Valid: " + isValidTrainId("TRN-1234"));
+        System.out.println("Cargo Code Valid: " + isValidCargoCode("PET-AB"));
 
-        System.out.println("Grouped Bogies:");
-        grouped.forEach((type, list) -> {
-            System.out.println("\nBogie Type: " + type);
-            list.forEach(b -> System.out.println("Capacity -> " + b.getCapacity()));
-        });
+        List<GoodsBogie> goods = Arrays.asList(
+                new GoodsBogie("Cylindrical", "Petroleum"),
+                new GoodsBogie("Open", "Coal")
+        );
 
-        // 🔹 UC10 Output
-        int totalSeats = calculateTotalSeats(bogies);
-
-        System.out.println("\n==============================");
-        System.out.println("Total Seating Capacity: " + totalSeats);
-        System.out.println("==============================");
-
-        // 🔹 UC11 Output
-        String trainId = "TRN-1234";
-        String cargoCode = "PET-AB";
-
-        System.out.println("\n==============================");
-        System.out.println("Train ID (" + trainId + ") Valid: " + isValidTrainId(trainId));
-        System.out.println("Cargo Code (" + cargoCode + ") Valid: " + isValidCargoCode(cargoCode));
-        System.out.println("==============================");
+        System.out.println("Safety Compliant: " + isSafetyCompliant(goods));
     }
 }
