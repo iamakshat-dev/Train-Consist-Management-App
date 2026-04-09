@@ -29,10 +29,18 @@ public class TrainConsistManagementApp {
         }
     }
 
-    // ✅ UC9 Core Logic
+    // ✅ UC9: Grouping
     public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> bogies) {
         return bogies.stream()
                 .collect(Collectors.groupingBy(Bogie::getName));
+    }
+
+    // ✅ UC10: Total Seat Calculation using reduce()
+    public static int calculateTotalSeats(List<Bogie> bogies) {
+
+        return bogies.stream()
+                .map(Bogie::getCapacity)   // extract capacity
+                .reduce(0, Integer::sum); // aggregate
     }
 
     // Demo main
@@ -46,13 +54,20 @@ public class TrainConsistManagementApp {
         bogies.add(new Bogie("Sleeper", 70));
         bogies.add(new Bogie("AC Chair", 60));
 
+        // 🔹 UC9 Output
         Map<String, List<Bogie>> grouped = groupBogiesByType(bogies);
 
         System.out.println("Grouped Bogies:");
-
         grouped.forEach((type, list) -> {
             System.out.println("\nBogie Type: " + type);
             list.forEach(b -> System.out.println("Capacity -> " + b.getCapacity()));
         });
+
+        // 🔹 UC10 Output
+        int totalSeats = calculateTotalSeats(bogies);
+
+        System.out.println("\n==============================");
+        System.out.println("Total Seating Capacity: " + totalSeats);
+        System.out.println("==============================");
     }
 }
