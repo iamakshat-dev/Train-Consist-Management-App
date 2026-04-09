@@ -6,12 +6,22 @@ import java.util.regex.Pattern;
 
 public class TrainConsistManagementApp {
 
-    // Passenger Bogie
+    // ================= UC14: CUSTOM EXCEPTION =================
+    public static class InvalidCapacityException extends Exception {
+        public InvalidCapacityException(String message) {
+            super(message);
+        }
+    }
+
+    // ================= PASSENGER BOGIE =================
     public static class Bogie {
         private String name;
         private int capacity;
 
-        public Bogie(String name, int capacity) {
+        public Bogie(String name, int capacity) throws InvalidCapacityException {
+            if (capacity <= 0) {
+                throw new InvalidCapacityException("Capacity must be greater than zero");
+            }
             this.name = name;
             this.capacity = capacity;
         }
@@ -20,7 +30,7 @@ public class TrainConsistManagementApp {
         public int getCapacity() { return capacity; }
     }
 
-    // Goods Bogie (UC12)
+    // ================= GOODS BOGIE =================
     public static class GoodsBogie {
         private String type;
         private String cargo;
@@ -66,70 +76,41 @@ public class TrainConsistManagementApp {
     }
 
     // ================= UC13 =================
-
-    // Loop filtering
     public static List<Bogie> filterBogiesUsingLoop(List<Bogie> bogies) {
         List<Bogie> result = new ArrayList<>();
         for (Bogie b : bogies) {
-            if (b.getCapacity() > 60) {
-                result.add(b);
-            }
+            if (b.getCapacity() > 60) result.add(b);
         }
         return result;
     }
 
-    // Stream filtering
     public static List<Bogie> filterBogiesUsingStream(List<Bogie> bogies) {
         return bogies.stream()
                 .filter(b -> b.getCapacity() > 60)
                 .toList();
     }
 
-    // Loop timing
     public static long measureLoopExecutionTime(List<Bogie> bogies) {
         long start = System.nanoTime();
         filterBogiesUsingLoop(bogies);
-        long end = System.nanoTime();
-        return end - start;
+        return System.nanoTime() - start;
     }
 
-    // Stream timing
     public static long measureStreamExecutionTime(List<Bogie> bogies) {
         long start = System.nanoTime();
         filterBogiesUsingStream(bogies);
-        long end = System.nanoTime();
-        return end - start;
+        return System.nanoTime() - start;
     }
 
     // ================= MAIN =================
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidCapacityException {
 
         List<Bogie> bogies = Arrays.asList(
                 new Bogie("Sleeper", 72),
                 new Bogie("AC Chair", 56),
-                new Bogie("First Class", 24),
-                new Bogie("Sleeper", 70),
-                new Bogie("AC Chair", 60)
+                new Bogie("First Class", 24)
         );
 
-        System.out.println("Grouped: " + groupBogiesByType(bogies));
         System.out.println("Total Seats: " + calculateTotalSeats(bogies));
-
-        System.out.println("Train ID Valid: " + isValidTrainId("TRN-1234"));
-        System.out.println("Cargo Code Valid: " + isValidCargoCode("PET-AB"));
-
-        List<GoodsBogie> goods = Arrays.asList(
-                new GoodsBogie("Cylindrical", "Petroleum"),
-                new GoodsBogie("Open", "Coal")
-        );
-
-        System.out.println("Safety Compliant: " + isSafetyCompliant(goods));
-
-        long loopTime = measureLoopExecutionTime(bogies);
-        long streamTime = measureStreamExecutionTime(bogies);
-
-        System.out.println("\n=== UC13 Performance ===");
-        System.out.println("Loop Time (ns): " + loopTime);
-        System.out.println("Stream Time (ns): " + streamTime);
     }
 }

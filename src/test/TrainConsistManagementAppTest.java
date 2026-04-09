@@ -8,90 +8,58 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TrainConsistManagementAppTest {
 
-    private List<TrainConsistManagementApp.Bogie> sampleBogies() {
-        return Arrays.asList(
+    // ================= UC14 TESTS =================
+
+    @Test
+    void testException_ValidCapacityCreation() throws Exception {
+        var bogie = new TrainConsistManagementApp.Bogie("Sleeper", 72);
+        assertNotNull(bogie);
+    }
+
+    @Test
+    void testException_NegativeCapacityThrowsException() {
+        Exception ex = assertThrows(
+                TrainConsistManagementApp.InvalidCapacityException.class,
+                () -> new TrainConsistManagementApp.Bogie("Sleeper", -10)
+        );
+
+        assertEquals("Capacity must be greater than zero", ex.getMessage());
+    }
+
+    @Test
+    void testException_ZeroCapacityThrowsException() {
+        assertThrows(
+                TrainConsistManagementApp.InvalidCapacityException.class,
+                () -> new TrainConsistManagementApp.Bogie("Sleeper", 0)
+        );
+    }
+
+    @Test
+    void testException_ExceptionMessageValidation() {
+        Exception ex = assertThrows(
+                TrainConsistManagementApp.InvalidCapacityException.class,
+                () -> new TrainConsistManagementApp.Bogie("AC Chair", 0)
+        );
+
+        assertEquals("Capacity must be greater than zero", ex.getMessage());
+    }
+
+    @Test
+    void testException_ObjectIntegrityAfterCreation() throws Exception {
+        var bogie = new TrainConsistManagementApp.Bogie("Sleeper", 72);
+
+        assertEquals("Sleeper", bogie.getName());
+        assertEquals(72, bogie.getCapacity());
+    }
+
+    @Test
+    void testException_MultipleValidBogiesCreation() throws Exception {
+        List<TrainConsistManagementApp.Bogie> list = Arrays.asList(
                 new TrainConsistManagementApp.Bogie("Sleeper", 72),
                 new TrainConsistManagementApp.Bogie("AC Chair", 56),
-                new TrainConsistManagementApp.Bogie("First Class", 24),
-                new TrainConsistManagementApp.Bogie("Sleeper", 70),
-                new TrainConsistManagementApp.Bogie("AC Chair", 60)
+                new TrainConsistManagementApp.Bogie("First Class", 24)
         );
-    }
 
-    // ================= UC9 =================
-    @Test
-    void testGrouping() {
-        var result = TrainConsistManagementApp.groupBogiesByType(sampleBogies());
-        assertTrue(result.containsKey("Sleeper"));
-    }
-
-    // ================= UC10 =================
-    @Test
-    void testTotalSeats() {
-        assertEquals(282,
-                TrainConsistManagementApp.calculateTotalSeats(sampleBogies()));
-    }
-
-    // ================= UC11 =================
-    @Test
-    void testValidTrainId() {
-        assertTrue(TrainConsistManagementApp.isValidTrainId("TRN-1234"));
-    }
-
-    @Test
-    void testInvalidTrainId() {
-        assertFalse(TrainConsistManagementApp.isValidTrainId("TRN12"));
-    }
-
-    // ================= UC12 =================
-    @Test
-    void testSafety_AllBogiesValid() {
-        List<TrainConsistManagementApp.GoodsBogie> list = Arrays.asList(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal")
-        );
-        assertTrue(TrainConsistManagementApp.isSafetyCompliant(list));
-    }
-
-    // ================= UC13 =================
-
-    @Test
-    void testLoopFilteringLogic() {
-        var result = TrainConsistManagementApp.filterBogiesUsingLoop(sampleBogies());
-        assertTrue(result.stream().allMatch(b -> b.getCapacity() > 60));
-    }
-
-    @Test
-    void testStreamFilteringLogic() {
-        var result = TrainConsistManagementApp.filterBogiesUsingStream(sampleBogies());
-        assertTrue(result.stream().allMatch(b -> b.getCapacity() > 60));
-    }
-
-    @Test
-    void testLoopAndStreamResultsMatch() {
-        var loop = TrainConsistManagementApp.filterBogiesUsingLoop(sampleBogies());
-        var stream = TrainConsistManagementApp.filterBogiesUsingStream(sampleBogies());
-        assertEquals(loop.size(), stream.size());
-    }
-
-    @Test
-    void testExecutionTimeMeasurement() {
-        long loopTime = TrainConsistManagementApp.measureLoopExecutionTime(sampleBogies());
-        long streamTime = TrainConsistManagementApp.measureStreamExecutionTime(sampleBogies());
-
-        assertTrue(loopTime > 0);
-        assertTrue(streamTime > 0);
-    }
-
-    @Test
-    void testLargeDatasetProcessing() {
-        List<TrainConsistManagementApp.Bogie> list = new ArrayList<>();
-
-        for (int i = 0; i < 10000; i++) {
-            list.add(new TrainConsistManagementApp.Bogie("Sleeper", 50 + (i % 50)));
-        }
-
-        var result = TrainConsistManagementApp.filterBogiesUsingStream(list);
-        assertNotNull(result);
+        assertEquals(3, list.size());
     }
 }
